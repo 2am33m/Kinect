@@ -7,7 +7,7 @@ class User(models.Model):
     last_name = models.CharField(max_length=55)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=100)
-    profile_picture_path = models.TextField()
+    profile_picture = models.ImageField(upload_to='profile_pics/', null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -17,7 +17,7 @@ class User(models.Model):
 
 class Photo(models.Model):
     description = models.TextField()
-    photo_path = models.TextField()
+    photo = models.ImageField(upload_to='posts/images', null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -37,7 +37,7 @@ class PhotoLike(models.Model):
 
 class Reel(models.Model):
     description = models.TextField()
-    video_path = models.TextField()
+    video = models.FileField(upload_to="posts/videos", null=True)
     user_id = models.ForeignKey(User, models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -63,7 +63,8 @@ class UserFollowing(models.Model):
 
 class Message(models.Model):
     message = models.TextField()
-    userSenderID = models.ForeignKey(User, related_name="sender", on_delete=models.CASCADE)
-    userReceiverID = models.ForeignKey(User, related_name="receiver",on_delete=models.CASCADE)
+    user_sender = models.ForeignKey(User, related_name="sender", on_delete=models.CASCADE)
+    user_receiver = models.ForeignKey(User, related_name="receiver",on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+
 
