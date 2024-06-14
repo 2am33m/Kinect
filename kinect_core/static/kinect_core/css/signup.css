@@ -1,0 +1,62 @@
+body{
+            background-color: #fafafa;
+
+        }
+
+        .signup-container{
+            max-width: 350px;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 10px;
+            background-color: #fff;
+
+        }
+
+        .signup-container form{
+            display: flex;
+            flex-direction: column;
+        }
+
+        .signup-container form .form-control{
+            margin-bottom: 20px;
+        }
+
+        .btn{
+            background-color: cadetblue;
+            border: none;
+        }
+        .btn:hover {
+            background-color: rgb(48, 66, 69);
+        }
+
+        img {
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+        #passwordHelp{
+            font-size: xx-small;
+            margin-bottom: 20px;
+            margin-top: 5px;
+        }
+
+        #password{
+            margin-bottom: 1%;
+        }
+
+        #login{
+            position: relative;
+            top: -40px;
+            text-align: center;
+            margin: 4% auto;
+            border: 1px;
+            padding: 10px;
+        }
+
+        a {
+            text-decoration: none; /* Remove underline */
+            color: #007bff; /* Optionally set link color */
+        }
+
+        a:hover {
+            text-decoration: underline; /* Underline on hover */
+        }
