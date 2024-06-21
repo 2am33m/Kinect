@@ -1,25 +1,46 @@
 body {
-            background-color: #fafafa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #fafafa;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
 
+      .container{
+        background-color: #fff;
+        max-width: 350px;
+        margin: 50px auto;
+        padding: 30px;
+        border-radius: 10px;
+
+      }
+
+      img{
+        width: 175px;
+        display: block;
+        margin: 20px auto;
+      }
+
+      .btn{
+            background-color: cadetblue;
+            border: none;
         }
 
-        .login-conatiner {
-            background-color: #fff;
-            max-width: 350px;
-            margin: 50px auto;
-            padding: 30px;
-            border-radius: 10px ;
-            border: 5px solid black;
-
-        }
-        .login-conatiner form {
-            display: flex;
-            flex-direction: column;
+      .btn:hover{
+          background-color: rgb(48, 66, 69);
         }
 
-        .login-conatiner form .form-control{
-            margin-bottom: 15px;
+      
+
+      form{
+        display: flex;
+        flex-direction: column;
+      }
+
+      a {
+            text-decoration: none; /* Remove underline */
+            color: #007bff; /* Optionally set link color */
+        }
+
+        a:hover {
+            text-decoration: underline; /* Underline on hover */
         }
 
         .signup-link{
@@ -27,25 +48,6 @@ body {
             text-align: center;
         }
 
-        img {
-            width: 175px;
-            display: block;
-            margin: 20px auto;
-        }
-
-        .btn{
-            background-color: cadetblue;
-            border: none;
-        }
-        .btn:hover {
-            background-color: rgb(48, 66, 69);
-        }
-
-        a {
-            text-decoration: none; /* Remove underline */
-            color: #007bff; /* Optionally set link color */
-        }
-
-        a:hover {
-            text-decoration: underline; /* Underline on hover */
+        .form-control{
+            margin-bottom:15px;
         }

@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # custom app
-    'kinect_core'
+    'kinect_core',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
