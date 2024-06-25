@@ -1,0 +1,44 @@
+/* static/css/styles.css */
+body {
+    background-color: #fafafa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.signup-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.form-control{
+    margin-bottom: 15px;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.btn-primary {
+    width: 100%;
+    background-color: cadetblue;
+    border: none;
+    margin-bottom: 15px;
+}
+.btn:hover{
+          background-color: rgb(48, 66, 69);
+        }
+
+p{
+    text-align: center;
+}
+a{
+    text-decoration: none; /* Remove underline */
+    color: #007bff; /* Optionally set link color */
+}
+a:hover {
+    text-decoration: underline; /* Underline on hover */
+}
