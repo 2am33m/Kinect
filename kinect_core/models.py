@@ -2,70 +2,69 @@ from django.db import models
 from django.utils import timezone
 
 # Create your models here.
-class user(models.Model):
-    firstName = models.CharField(max_length=55)
-    lastName = models.CharField(max_length=55)
+class User(models.Model):
+    first_name = models.CharField(max_length=55)
+    last_name = models.CharField(max_length=55)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=100)
-    profile_picture_path = models.TextField()
-    created_at = models.DateTimeField(default=timezone.now)
+    profile_picture = models.ImageField(upload_to='profile_pics/', null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.firstName} {self.lastName}"
+        return f"{self.first_name} {self.last_name}"
 
 
-class photo(models.Model):
+class Photo(models.Model):
     description = models.TextField()
-    photo_path = models.TextField()
-    created_at = models.DateTimeField(default=timezone.now)
+    photo = models.ImageField(upload_to='posts/images', null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey(user, on_delete=models.CASCADE)
 
-
-class comment_for_photo(models.Model):
+class CommentForPhoto(models.Model):
     comment = models.TextField
-    created_at = models.DateTimeField(default=timezone.now)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    photo_id = models.ForeignKey(Photo, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    userID = models.ForeignKey(user, on_delete=models.CASCADE)
-    photoID = models.ForeignKey(photo, on_delete=models.CASCADE)
 
-class photo_like(models.Model):
-    created_at = models.DateTimeField(default=timezone.now)
+class PhotoLike(models.Model):
+    user_id = models.ForeignKey(User, models.CASCADE)
+    photo_id = models.ForeignKey(Photo, models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    userID = models.ForeignKey(user, models.CASCADE)
-    photoID = models.ForeignKey(photo, models.CASCADE)
 
-class reel(models.Model):
+class Reel(models.Model):
     description = models.TextField()
-    video_path = models.TextField()
-    created_at = models.DateTimeField(default=timezone.now)
+    video = models.FileField(upload_to="posts/videos", null=True)
+    user_id = models.ForeignKey(User, models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    userID = models.ForeignKey(user, models.CASCADE)
 
-class comment_for_reel(models.Model):
+class CommentForReel(models.Model):
     comment = models.TextField()
-    created_at = models.DateTimeField(default=timezone.now)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    reel_id = models.ForeignKey(Reel, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    userID = models.ForeignKey(user, on_delete=models.CASCADE)
-    reelID = models.ForeignKey(reel, on_delete=models.CASCADE)
 
-class reel_like(models.Model):
-    created_at = models.DateTimeField(default=timezone.now)
+class ReelLike(models.Model):
+    user_id = models.ForeignKey(User, models.CASCADE)
+    reel_id = models.ForeignKey(Reel, models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    userID = models.ForeignKey(user, models.CASCADE)
-    reelID = models.ForeignKey(reel, models.CASCADE)
 
-class user_following(models.Model):
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(default=timezone.now)
-    userID = models.ForeignKey(user, related_name="following", on_delete=models.CASCADE)
-    userID_following = models.ForeignKey(user, related_name="followers",on_delete=models.CASCADE)
+class UserFollowing(models.Model):
+    user_followed = models.ForeignKey(User, related_name="followers", on_delete=models.CASCADE, null=True)
+    user_following = models.ForeignKey(User, related_name="following",on_delete=models.CASCADE, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
-class message(models.Model):
+class Message(models.Model):
     message = models.TextField()
-    created_at = models.DateTimeField(default=timezone.now)
-    userSenderID = models.ForeignKey(user, related_name="sent_message", on_delete=models.CASCADE)
-    userReceiverID = models.ForeignKey(user, related_name="received_message",on_delete=models.CASCADE)
+    user_sender = models.ForeignKey(User, related_name="sender", on_delete=models.CASCADE)
+    user_receiver = models.ForeignKey(User, related_name="receiver",on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
