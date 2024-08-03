@@ -1,9 +1,13 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib import messages
-from .forms import SignUpForm, PhotoForm, ReelForm
+from .forms import SignUpForm, PhotoForm, ReelForm, SearchForm
 from django.contrib.auth.decorators import login_required
 from .models import Photo
+from .models import UserFollowing
+from django.contrib.auth.models import User
+
+User = get_user_model()
 
 
 # Create your views here.
@@ -48,7 +52,6 @@ def home(request):
     return render(request, 'kinect_core/home.html', {'photos': photos})
 
 
-
 @login_required
 def createPhoto(request):
     if request.method == 'POST':
@@ -73,3 +76,54 @@ def createPhoto(request):
     return render(request, 'kinect_core/create.html', {
         'form': form
     })
+
+
+@login_required
+def profile_view(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    followers = user.followers.count()
+    following = user.following.count()
+    photos = Photo.objects.filter(user=user)
+    is_following = UserFollowing.objects.filter(user_following=request.user, user_followed=user).exists()
+    return render(request, 'kinect_core/profile.html', {
+        'photos': photos,
+        'user': user,
+        'followers': followers,
+        'following': following,
+        'is_following': is_following,
+    })
+
+
+@login_required
+def follow_user(request, user_id):
+    user_to_follow = get_object_or_404(User, id=user_id)
+    if user_to_follow != request.user:
+        UserFollowing.objects.get_or_create(user_following=request.user, user_followed=user_to_follow)
+    return redirect('profile', user_id=user_id)
+
+
+@login_required
+def unfollow_user(request, user_id):
+    user_to_unfollow = get_object_or_404(User, id=user_id)
+    if request.user != user_to_unfollow:
+        follow_object = UserFollowing.objects.filter(user_following=request.user, user_followed=user_to_unfollow)
+        follow_object.delete()
+    return redirect('profile', user_id=user_id)
+
+
+def search(request):
+    query = request.GET.get('query', '')
+    results = []
+
+    if query:
+        results = User.objects.filter(username__icontains=query) | User.objects.filter(
+            first_name__icontains=query) | User.objects.filter(last_name__icontains=query) | User.objects.filter(
+            email__icontains=query)
+
+    return render(request, 'kinect_core/search.html', {
+        'query': query,
+        'results': results,
+        'form': SearchForm(initial={'query': query}),
+    })
+
+

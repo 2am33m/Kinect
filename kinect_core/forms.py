@@ -26,3 +26,7 @@ class ReelForm(forms.ModelForm):
     class Meta:
         model = Reel
         fields = ['description', 'video']
+
+
+class SearchForm(forms.Form):
+    query = forms.CharField(max_length=100, label='Search other users')

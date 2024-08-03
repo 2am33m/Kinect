@@ -114,8 +114,9 @@
         <span>Home</span>
     </div>
     <div class="nav-item">
+        <a href="{% url 'search' %}">
         <i class="fa fa-search"></i>
-        <span>Search</span>
+            <span>Search</span></a>
     </div>
     <div class="nav-item">
         <i class="fa fa-compass"></i>
@@ -134,13 +135,16 @@
         <span>Notifications</span>
     </div>
     <div class="nav-item">
+        
         <a href="{% url 'create'%}">
+
         <i class="icon fa fa-plus-square"></i>
          <span>Create</span></a>
     </div>
     <div class="nav-item">
+        <a href="{% url 'profile' user.id %}">
         <i class="fa fa-user"></i>
-        <span>Profile</span>
+        <span>Profile</span></a>
     </div>
     <div class="bottom-icon">
         <i class="fa fa-bars"></i>
