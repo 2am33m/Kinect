@@ -13,6 +13,7 @@ urlpatterns = [
     path('follow/<int:user_id>', views.follow_user, name='follow'),
     path('unfollow/<int:user_id>', views.unfollow_user, name='unfollow'),
     path('search/', views.search, name='search'),
+    path('logout/', views.logout_user, name='logout'),
 ]
 
 
