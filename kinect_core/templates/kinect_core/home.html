@@ -108,6 +108,10 @@
       .modal-body{
         color: black;
       }
+      .btn btn-primary{
+        background-color: grey;
+        color:white;
+      }
 
     </style>
 
@@ -150,7 +154,9 @@
         <span>Profile</span></a>
     </div>
      <div class="bottom-icon" data-bs-toggle="modal" data-bs-target="#logoutModal">
-        <i class="fa fa-bars"></i>
+        <button type="submit" class="btn btn-light">
+         <span>Logout</span>
+            </button>
     </div>
 </div>
 
@@ -190,7 +196,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <a href="{% url 'logout' %}" class="btn btn-primary">Logout</a>
+                <a href="{% url 'logout' %}" class="btn btn-danger" id="logout">Logout</a>
             </div>
         </div>
     </div>
