@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib import messages
-from .forms import SignUpForm, PhotoForm, ReelForm, SearchForm
+from .forms import SignUpForm, PhotoForm, ReelForm, SearchForm, LoginForm
 from django.contrib.auth.decorators import login_required
 from .models import Photo
 from .models import UserFollowing
@@ -14,18 +14,23 @@ User = get_user_model()
 
 def login_user(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            messages.success(request, "Login Succesfully")
-            return redirect('home')
-        else:
-            messages.success(request, "There was an error logging In, Try again...")
-            return redirect("login")
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = request.POST['username']
+            password = request.POST['password']
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                messages.success(request, "Login Succesfully")
+                return redirect('home')
+            else:
+                messages.success(request, "Invalid username or password. Please try again.")
     else:
-        return render(request, 'kinect_core/login.html')
+        form = LoginForm()
+
+    return render(request, 'kinect_core/login.html', {
+        'form': form
+    })
 
 
 def signup_view(request):
@@ -46,16 +51,15 @@ def signup_view(request):
 
 
 def home(request):
-
     followed_users = UserFollowing.objects.filter(user_following=request.user).values_list('user_followed', flat=True)
 
     # User Following Photos
     photos_from_following = Photo.objects.filter(user__in=followed_users).order_by('-created_at')
 
-    #Own Photos
+    # Own Photos
     own_photos = Photo.objects.filter(user=request.user)
 
-    #Combine the two
+    # Combine the two
     photos = photos_from_following | own_photos
     photos = photos.order_by('-created_at')
 
@@ -143,4 +147,3 @@ def search(request):
 def logout_user(request):
     logout(request)
     return redirect('login')
-

@@ -51,3 +51,8 @@ body {
         .form-control{
             margin-bottom:15px;
         }
+        .text-danger {
+            color: #dc3545; /* Bootstrap's red color for error messages */
+            margin-top: 5px; /* Space between the field and the error message */
+        }
+
