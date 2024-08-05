@@ -46,9 +46,22 @@ def signup_view(request):
 
 
 def home(request):
-    photos = Photo.objects.all()
+
+    followed_users = UserFollowing.objects.filter(user_following=request.user).values_list('user_followed', flat=True)
+
+    # User Following Photos
+    photos_from_following = Photo.objects.filter(user__in=followed_users).order_by('-created_at')
+
+    #Own Photos
+    own_photos = Photo.objects.filter(user=request.user)
+
+    #Combine the two
+    photos = photos_from_following | own_photos
+    photos = photos.order_by('-created_at')
+
     for photo in photos:
         print(f"Photo ID: {photo.id}, Photo Path: {photo.photo_path}")
+
     return render(request, 'kinect_core/home.html', {'photos': photos})
 
 
