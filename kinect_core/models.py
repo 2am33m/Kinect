@@ -1,28 +1,28 @@
 from django.db import models
 from django.utils import timezone
 from django.conf import settings
-
-
+from django.contrib.auth import get_user_model
+User = get_user_model()
 # Create your models here.
 
 class Photo(models.Model):
     description = models.TextField()
     photo_path = models.ImageField(upload_to='posts/images', null=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
 
 class CommentForPhoto(models.Model):
     comment = models.TextField(null=True)
-    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     photo_id = models.ForeignKey(Photo, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
 
 class PhotoLike(models.Model):
-    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, models.CASCADE)
+    user_id = models.ForeignKey(User, models.CASCADE)
     photo_id = models.ForeignKey(Photo, models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -31,30 +31,30 @@ class PhotoLike(models.Model):
 class Reel(models.Model):
     description = models.TextField()
     video = models.FileField(upload_to="posts/videos", null=True)
-    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, models.CASCADE)
+    user_id = models.ForeignKey(User, models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
 
 class CommentForReel(models.Model):
     comment = models.TextField()
-    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     reel_id = models.ForeignKey(Reel, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
 
 class ReelLike(models.Model):
-    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, models.CASCADE)
+    user_id = models.ForeignKey(User, models.CASCADE)
     reel_id = models.ForeignKey(Reel, models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
 
 class UserFollowing(models.Model):
-    user_followed = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="followers", on_delete=models.CASCADE,
+    user_followed = models.ForeignKey(User, related_name="followers", on_delete=models.CASCADE,
                                       null=True)
-    user_following = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="following", on_delete=models.CASCADE,
+    user_following = models.ForeignKey(User, related_name="following", on_delete=models.CASCADE,
                                        null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
