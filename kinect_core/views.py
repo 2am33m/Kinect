@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from .models import Photo
 from .models import UserFollowing
 from django.contrib.auth.models import User
+from django.http import JsonResponse
+from django.urls import reverse
 
 User = get_user_model()
 
@@ -132,17 +134,46 @@ def search(request):
     query = request.GET.get('query', '')
     results = []
 
-    if query:
-        results = User.objects.filter(username__icontains=query) | User.objects.filter(
-            first_name__icontains=query) | User.objects.filter(last_name__icontains=query) | User.objects.filter(
-            email__icontains=query)
+    print(f"Received query: {query}")  # Debugging: Print the received query
 
+    if query:
+        results = User.objects.filter(
+            username__icontains=query
+        ) | User.objects.filter(
+            first_name__icontains=query
+        ) | User.objects.filter(
+            last_name__icontains=query
+        ) | User.objects.filter(
+            email__icontains=query
+        )
+
+        print(f"Found {results.count()} results")  # Debugging: Print the number of results
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        print("Processing AJAX request...")  # Debugging: Confirm AJAX request
+
+        results_data = []
+        for user in results:
+            print(f"Processing user: {user.first_name} {user.last_name}")  # Debugging: Print each user processed
+
+            user_data = {
+                'id': user.id,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'profile_url': reverse('profile', args=[user.id])
+            }
+            results_data.append(user_data)
+
+        print(
+            f"Returning {len(results_data)} results in JSON")  # Debugging: Confirm the number of results being returned
+        return JsonResponse({'results': results_data})
+
+    print("Rendering search template")  # Debugging: Confirm template rendering
     return render(request, 'kinect_core/search.html', {
         'query': query,
         'results': results,
         'form': SearchForm(initial={'query': query}),
     })
-
 
 def logout_user(request):
     logout(request)
