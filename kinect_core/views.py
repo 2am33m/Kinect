@@ -26,7 +26,13 @@ def login_user(request):
                 messages.success(request, "Login Succesfully")
                 return redirect('home')
             else:
-                messages.success(request, "Invalid username or password. Please try again.")
+                # Check if the username exists
+                if User.objects.filter(username=username).exists():
+                    # If username exists, password is likely incorrect
+                    form.add_error('password', "Incorrect password. Please try again.")
+                else:
+                    # Username does not exist
+                    form.add_error('username', "Username does not exist.")
     else:
         form = LoginForm()
 
@@ -52,50 +58,53 @@ def signup_view(request):
     })
 
 
+@login_required
 def home(request):
+    if request.method == 'POST':
+        photo_form = PhotoForm(request.POST, request.FILES)
+        if photo_form.is_valid():
+            photo = photo_form.save(commit=False)
+            photo.user = request.user
+            photo.save()
+            messages.success(request, 'Photo posted successfully.')
+            return redirect('home')  # Redirect to the same page to refresh the view
+        else:
+            messages.error(request, 'Error posting photo. Please check the form.')
+    else:
+        photo_form = PhotoForm()
+
     followed_users = UserFollowing.objects.filter(user_following=request.user).values_list('user_followed', flat=True)
-
-    # User Following Photos
     photos_from_following = Photo.objects.filter(user__in=followed_users).order_by('-created_at')
-
-    # Own Photos
     own_photos = Photo.objects.filter(user=request.user)
+    photos = (photos_from_following | own_photos).order_by('-created_at')
 
-    # Combine the two
-    photos = photos_from_following | own_photos
-    photos = photos.order_by('-created_at')
+    context = {
+        'photos': photos,
+        'photo_form': photo_form
+    }
 
-    for photo in photos:
-        print(f"Photo ID: {photo.id}, Photo Path: {photo.photo_path}")
-
-    return render(request, 'kinect_core/home.html', {'photos': photos})
+    return render(request, 'kinect_core/home.html', context)
 
 
 @login_required
 def createPhoto(request):
     if request.method == 'POST':
         form = PhotoForm(request.POST, request.FILES)
-        print(f"Form data: {request.POST}")
-        print(f"Files data: {request.FILES}")
         if form.is_valid():
             photo = form.save(commit=False)
             photo.user = request.user
             photo.save()
-            messages.success(request, 'Photo posted successfully.')  # Set success message
-            print("Form is valid. Redirecting...")
+
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'success': True, 'message': 'Photo posted successfully'})
+
+            messages.success(request, 'Photo posted successfully.')
             return redirect('home')
-        else:
-            print("Sameem", form.errors)
-            messages.error(request, 'Error posting photo. Please check the form.')  # Set error message
-            print("Form is invalid. Rendering form again.")
-    else:
-        form = PhotoForm()
 
-    print(f"Rendering form with initial data: {form.initial}")
-    return render(request, 'kinect_core/create.html', {
-        'form': form
-    })
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({'success': False, 'message': 'Error posting photo. Please check the form.'})
 
+    return redirect('home')
 
 @login_required
 def profile_view(request, user_id):

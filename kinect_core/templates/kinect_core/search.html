@@ -74,7 +74,7 @@
                resultsContainer.empty();  // Clear previous results
 
                 if (response.results.length > 0) {
-                var resultsHtml = '<h2>Search Results for "' + query + '":</h2><ul class="list-group">';
+                let resultsHtml = '<h2>Search Results for "' + query + '":</h2><ul class="list-group">';
                 response.results.forEach(function(user) {
                     resultsHtml += '<li class="list-group-item user">' +
                                    '<a href="' + user.profile_url + '">' +

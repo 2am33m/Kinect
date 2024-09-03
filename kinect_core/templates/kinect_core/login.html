@@ -18,6 +18,15 @@
         {% csrf_token %}
         <img src="{% static 'kinect_core/images/kinect.png'%}" alt="img.jpg">
 
+        <!-- Display non-field errors -->
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
         <div class="form-group">
             {% render_field form.username class="form-control" placeholder="Username" %}
             {% if form.username.errors %}
