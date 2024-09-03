@@ -1,0 +1,32 @@
+<!-- create.html -->
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    <!-- Display form errors if any -->
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            <strong>Error!</strong> Please correct the errors below.
+        </div>
+    {% endif %}
+    
+    <!-- Display each form field -->
+    <div class="form-group">
+        <label for="id_description">Description:</label>
+        {{ form.description }}
+        <!-- Display errors for description field if any -->
+        {% for error in form.description.errors %}
+            <div class="alert alert-danger">{{ error }}</div>
+        {% endfor %}
+    </div>
+    
+    <div class="form-group">
+        <label for="id_photo_path">Photo:</label>
+        {{ form.photo_path }}
+        <!-- Display errors for photo_path field if any -->
+        {% for error in form.photo_path.errors %}
+            <div class="alert alert-danger">{{ error }}</div>
+        {% endfor %}
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
