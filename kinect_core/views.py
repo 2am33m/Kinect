@@ -3,11 +3,11 @@ from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib import messages
 from .forms import SignUpForm, PhotoForm, ReelForm, SearchForm, LoginForm
 from django.contrib.auth.decorators import login_required
-from .models import Photo
-from .models import UserFollowing
+from .models import UserFollowing, PhotoLike, Photo
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.urls import reverse
+from django.views.decorators.http import require_POST
 
 User = get_user_model()
 
@@ -78,6 +78,8 @@ def home(request):
     own_photos = Photo.objects.filter(user=request.user)
     photos = (photos_from_following | own_photos).order_by('-created_at')
 
+
+
     context = {
         'photos': photos,
         'photo_form': photo_form
@@ -105,6 +107,7 @@ def createPhoto(request):
             return JsonResponse({'success': False, 'message': 'Error posting photo. Please check the form.'})
 
     return redirect('home')
+
 
 @login_required
 def profile_view(request, user_id):
@@ -184,6 +187,9 @@ def search(request):
         'form': SearchForm(initial={'query': query}),
     })
 
+
 def logout_user(request):
     logout(request)
     return redirect('login')
+
+
